@@ -7,10 +7,12 @@ Knowing that AWS S3 rejects requests from local domains, there's a need to test 
 
 ### 2. Go to `app.js` and change `line 22` whitelisted domains for CORS (REQUIRED)
 - This will depend on the site/schema you're currently working on, so an entry to this array should look like this:
-```
+
+```js
 // Whitelist of allowed origins
 const whitelist = ['http://{SCHEMA_NAME}.dm.test:3333'];
 ```
+
 - Where `{SCHEMA_NAME}` should be the name of the site/schema.
 
 ### 3. Run `npm start` to start the server and you're done!
@@ -22,38 +24,43 @@ Tipically, sites in DM has a file called `_contact_image_uploader.html.haml` pla
 
 This file is called from a form with an file input. Generally, this form has a class called `directUpload`. The calling of the image uploader in the form looks like this:
 
-```
+```ruby
 = render 'contact_image_uploader', resource: f.object
 .upload-file-names{ 'data-photo-names' => true }
 ```
 
 For a better understanding, it's recommended to read and understand what the image uploader file does. In this file, bellow the line:
 
-```
+```js
 $('.directUpload').find("input:file").each(function(i, elem) {
 ```
+
 add this constant:
-```
+
+```js
 const localServerEndpoint = 'http://localhost:3000/upload';
 ```
+
 Later, from this line:
 
-```
+```js
 fileInput.fileupload({
 ```
+
 inside the object passed to `fileupload`:
 
 * Modify the field `url` from `'#{@s3_direct_post.url}'` to `localServerEndpoint`.
 * Comment out the field `formData` (`// formData:         #{@s3_direct_post.fields.to_json.html_safe},`).
 * Change the field `dataType` from `XML` to `json`.
 * At the beginning of the method `done`, add these constants:
-```
+```js
 const jsonResponse = data.jqXHR.responseJSON;
 const localImageFilename = jsonResponse.file.filename;
 const localImageURL = jsonResponse.url;
 ```
 The `jsonResponse` value have the response from the local server when a file is uploaded. This is an example of how this response looks:
-```
+
+```json
 {
     "message": "File uploaded successfully",
     "url": "http://localhost:3000/uploads/1727796908483.png"
@@ -69,9 +76,12 @@ The `jsonResponse` value have the response from the local server when a file is 
     },
 }
 ```
+
 From now on, throughout the `done` method, where is needed filename or the image url, you will use the values `localImageFilename` and `localImageURL` respectively. For example, this is the `done` method used in the saratoga's image uploader:
+
 * Before the changes:
-```
+
+```ruby
 done: function(e, data) {
   submitButton.prop('disabled', false);
 
@@ -135,8 +145,10 @@ done: function(e, data) {
   fileInput.get(0).value = null;
 },
 ```
+
 * After applying the above changes:
-```
+
+```ruby
 done: function(e, data) {
   const jsonResponse = data.jqXHR.responseJSON;
   const localImageFilename = jsonResponse.file.filename;
