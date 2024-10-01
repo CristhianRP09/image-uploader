@@ -18,13 +18,11 @@ const storage = multer.diskStorage({
 
 const upload = multer({ storage: storage });
 
-// Whitelist of allowed origins
-const whitelist = [''];
-
 // Custom CORS configuration
 const corsOptions = {
   origin: function (origin, callback) {
-    if (!origin || whitelist.indexOf(origin) !== -1) {
+    const regex = /^http:\/\/[a-zA-Z0-9_-]+\.dm\.test:3333$/;
+    if (!origin || regex.test(origin)) {
       callback(null, true);
     } else {
       callback(new Error('Not allowed by CORS'));

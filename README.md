@@ -1,31 +1,21 @@
 # SpeedDigital Contact Image Uploader (backend)
 
-This backend is used to simulate/test image uploads for DM sites. 
+This backend is used to simulate/test image uploads for DM sites.
 Knowing that AWS S3 rejects requests from local domains, there's a need to test image uploads as if they were in a staging or production environment. After cloning this repo, follow these steps:
 
 ### 1. Run `npm i` to install dependencies
 
-### 2. Go to `app.js` and change `line 22` whitelisted domains for CORS (REQUIRED)
-- This will depend on the site/schema you're currently working on, so an entry to this array should look like this:
-
-```js
-// Whitelist of allowed origins
-const whitelist = ['http://{SCHEMA_NAME}.dm.test:3333'];
-```
-
-- Where `{SCHEMA_NAME}` should be the name of the site/schema.
-
-### 3. Run `npm start` to start the server and you're done!
+### 2. Run `npm start` to start the server and you're done!
 -----------------------------
 
 ## How to modify `_contact_image_uploader.html.haml` file
 
-Tipically, sites in DM has a file called `_contact_image_uploader.html.haml` placed in the routes `app/sites/{SCHEMA_NAME}/views/applicacion/` or `app/sites/{SCHEMA_NAME}/views/applicacion/common/`. If you don't find this file inside the site folder, then the file is being used is located in the path `app/views/common/_contact_image_uploader.html.haml`
+Tipically, sites in DM have a file called `_contact_image_uploader.html.haml` placed in the paths `app/sites/{SCHEMA_NAME}/views/applicacion/` or `app/sites/{SCHEMA_NAME}/views/applicacion/common/`, where `{SCHEMA_NAME}` should be the name of the site/schema. If you don't find this file inside the site folder, then the file that is being used is located in the path `app/views/common/_contact_image_uploader.html.haml`
 
-This file is called from a form with an file input. Generally, this form has a class called `directUpload`. The calling of the image uploader in the form looks like this:
+This file is imported from a form with a file input. Generally, this form has a class called `directUpload`. The calling of the image uploader in the form looks like this:
 
 ```ruby
-= render 'contact_image_uploader', resource: f.object
+= render 'application/contact_image_uploader', resource: f.object
 .upload-file-names{ 'data-photo-names' => true }
 ```
 
@@ -58,7 +48,7 @@ const jsonResponse = data.jqXHR.responseJSON;
 const localImageFilename = jsonResponse.file.filename;
 const localImageURL = jsonResponse.url;
 ```
-The `jsonResponse` value have the response from the local server when a file is uploaded. This is an example of how this response looks:
+The `jsonResponse` value has the response from the local server when a file is uploaded. This is an example of how this response looks:
 
 ```json
 {
@@ -180,7 +170,7 @@ From now on, throughout the `done` method, where is needed filename or the image
 ...
 ```
 
-Please take in account that the `done` method is different from a site to another one, but generally the constants `localImageFilename` and `localImageURL` will replace any filename or image url used in this method.
+> **_NOTE:_** Please take in account that the `done` method is different from a site to another one, however the constants `localImageFilename` and `localImageURL` will replace any filename or image url used in this method.
 
 -----------------------------
 
