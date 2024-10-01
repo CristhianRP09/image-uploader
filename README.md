@@ -73,138 +73,138 @@ From now on, throughout the `done` method, where is needed filename or the image
 * Before the changes:
 ```
 done: function(e, data) {
-    submitButton.prop('disabled', false);
+  submitButton.prop('disabled', false);
 
-    progressBar
+  progressBar
     .removeClass('uploading-in-progress')
     .addClass('uploading-successful')
     .text("Uploading done")
 
-    setTimeout(function() {
+  setTimeout(function() {
     progressBar.removeClass('uploading-successful');
-    }, 5000);
+  }, 5000);
 
-    var uid = parseInt(Math.random() * 999999999);
+  var uid = parseInt(Math.random() * 999999999);
 
-    if ($fileNamesContainer.length) {
+  if ($fileNamesContainer.length) {
     var filename = data.files[0].name;
 
     var $fileContainer = $('<div>')
-        .addClass('direct-upload')
-        .attr('data-photo-uid', uid)
-        .attr('data-photo-name', filename);
+      .addClass('direct-upload')
+      .attr('data-photo-uid', uid)
+      .attr('data-photo-name', filename);
 
-        if ( form.hasClass('saratoga_consign_form') ) {
-        var imgUrl = data.url + data.formData.key.replace('${filename}', filename);
+    if ( form.hasClass('saratoga_consign_form') ) {
+      var imgUrl = data.url + data.formData.key.replace('${filename}', filename);
 
-        var $photoContainer = $('<div>')
-            .addClass('direct-upload__image')
-            .css('background-image', `url(${imgUrl})`);
+      var $photoContainer = $('<div>')
+        .addClass('direct-upload__image')
+        .css('background-image', `url(${imgUrl})`);
 
-        $fileContainer.append($photoContainer);
-        }
+      $fileContainer.append($photoContainer);
+    }
 
     var $photoName = $('<span>')
-        .addClass('direct-upload__name')
-        .text(filename);
+      .addClass('direct-upload__name')
+      .text(filename);
     $fileContainer.append($photoName);
 
     var $closeBtn = $('<span>')
-        .addClass('direct-upload__remove')
-        .append('<svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M1.40673 0L0 1.40673L8.59327 10L0 18.5933L1.40673 20L10 11.4067L18.5933 20L20 18.5933L11.4067 10L20 1.40673L18.5933 0L10 8.59327L1.40673 0Z" fill="white"/></svg>')
-        .attr('onclick', 'deleteUploadedImage(' + uid + ', event);');
+      .addClass('direct-upload__remove')
+      .append('<svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M1.40673 0L0 1.40673L8.59327 10L0 18.5933L1.40673 20L10 11.4067L18.5933 20L20 18.5933L11.4067 10L20 1.40673L18.5933 0L10 8.59327L1.40673 0Z" fill="white"/></svg>')
+      .attr('onclick', 'deleteUploadedImage(' + uid + ', event);');
     $fileContainer.append($closeBtn);
 
     $fileNamesContainer.append($fileContainer);
-    }
+  }
 
-    // extract key and generate URL from response
-    var key   = $(data.jqXHR.responseXML).find("Key").text();
-    var url   = 'https://#{@s3_direct_post.url.host}/' + key;
+  // extract key and generate URL from response
+  var key   = $(data.jqXHR.responseXML).find("Key").text();
+  var url   = 'https://#{@s3_direct_post.url.host}/' + key;
 
-    // create hidden field
-    var input = $("<input />", {
+  // create hidden field
+  var input = $("<input />", {
     type: 'hidden',
     name: '#{contact_params_name}[image_urls][]',
     value: url,
     id: 'photo-upload-' + uid
-    })
-    form.append(input);
+  })
+  form.append(input);
 
-    // explicitly unset files from the file input so they don't get added to the payload with the form submit
-    fileInput.get(0).value = null;
+  // explicitly unset files from the file input so they don't get added to the payload with the form submit
+  fileInput.get(0).value = null;
 },
 ```
 * After applying the above changes:
 ```
 done: function(e, data) {
-    const jsonResponse = data.jqXHR.responseJSON;
-    const localImageFilename = jsonResponse.file.filename;
-    const localImageURL = jsonResponse.url;
+  const jsonResponse = data.jqXHR.responseJSON;
+  const localImageFilename = jsonResponse.file.filename;
+  const localImageURL = jsonResponse.url;
 
-    submitButton.prop('disabled', false);
+  submitButton.prop('disabled', false);
 
-    progressBar
+  progressBar
     .removeClass('uploading-in-progress')
     .addClass('uploading-successful')
     .text("Uploading done")
 
-    setTimeout(function() {
+  setTimeout(function() {
     progressBar.removeClass('uploading-successful');
-    }, 5000);
+  }, 5000);
 
-    var uid = parseInt(Math.random() * 999999999);
+  var uid = parseInt(Math.random() * 999999999);
 
-    if ($fileNamesContainer.length) {
+  if ($fileNamesContainer.length) {
     // var filename = data.files[0].name;
     var filename = localImageFilename;
 
     var $fileContainer = $('<div>')
-        .addClass('direct-upload')
-        .attr('data-photo-uid', uid)
-        .attr('data-photo-name', filename);
+      .addClass('direct-upload')
+      .attr('data-photo-uid', uid)
+      .attr('data-photo-name', filename);
 
-        if ( form.hasClass('saratoga_consign_form') ) {
-        // var imgUrl = data.url + data.formData.key.replace('${filename}', filename);
-        var imgUrl = localImageURL;
+    if ( form.hasClass('saratoga_consign_form') ) {
+      // var imgUrl = data.url + data.formData.key.replace('${filename}', filename);
+      var imgUrl = localImageURL;
 
-        var $photoContainer = $('<div>')
-            .addClass('direct-upload__image')
-            .css('background-image', `url(${imgUrl})`);
+      var $photoContainer = $('<div>')
+        .addClass('direct-upload__image')
+        .css('background-image', `url(${imgUrl})`);
 
-        $fileContainer.append($photoContainer);
-        }
+      $fileContainer.append($photoContainer);
+    }
 
     var $photoName = $('<span>')
-        .addClass('direct-upload__name')
-        .text(filename);
+      .addClass('direct-upload__name')
+      .text(filename);
     $fileContainer.append($photoName);
 
     var $closeBtn = $('<span>')
-        .addClass('direct-upload__remove')
-        .append('<svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M1.40673 0L0 1.40673L8.59327 10L0 18.5933L1.40673 20L10 11.4067L18.5933 20L20 18.5933L11.4067 10L20 1.40673L18.5933 0L10 8.59327L1.40673 0Z" fill="white"/></svg>')
-        .attr('onclick', 'deleteUploadedImage(' + uid + ', event);');
+      .addClass('direct-upload__remove')
+      .append('<svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M1.40673 0L0 1.40673L8.59327 10L0 18.5933L1.40673 20L10 11.4067L18.5933 20L20 18.5933L11.4067 10L20 1.40673L18.5933 0L10 8.59327L1.40673 0Z" fill="white"/></svg>')
+      .attr('onclick', 'deleteUploadedImage(' + uid + ', event);');
     $fileContainer.append($closeBtn);
 
     $fileNamesContainer.append($fileContainer);
-    }
+  }
 
-    // extract key and generate URL from response
-    var key   = $(data.jqXHR.responseXML).find("Key").text();
-    // var url   = 'https://#{@s3_direct_post.url.host}/' + key;
-    var url   = localImageURL;
+  // extract key and generate URL from response
+  var key   = $(data.jqXHR.responseXML).find("Key").text();
+  // var url   = 'https://#{@s3_direct_post.url.host}/' + key;
+  var url   = localImageURL;
 
-    // create hidden field
-    var input = $("<input />", {
+  // create hidden field
+  var input = $("<input />", {
     type: 'hidden',
     name: '#{contact_params_name}[image_urls][]',
     value: url,
     id: 'photo-upload-' + uid
-    })
-    form.append(input);
+  })
+  form.append(input);
 
-    // explicitly unset files from the file input so they don't get added to the payload with the form submit
-    fileInput.get(0).value = null;
+  // explicitly unset files from the file input so they don't get added to the payload with the form submit
+  fileInput.get(0).value = null;
 },
 ```
 
