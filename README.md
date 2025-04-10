@@ -45,7 +45,7 @@ inside the object passed to `fileupload`:
 * At the beginning of the method `done`, add these constants:
 ```js
 const jsonResponse = data.jqXHR.responseJSON;
-const localImageFilename = jsonResponse.file.filename;
+const localImageFilename = jsonResponse.file.originalname;
 const localImageURL = jsonResponse.url;
 ```
 The `jsonResponse` value has the response from the local server when a file is uploaded. This is an example of how this response looks:
@@ -95,7 +95,7 @@ From now on, throughout the `done` method, where is needed filename or the image
 
         done: function(e, data) {
 +         const jsonResponse = data.jqXHR.responseJSON;
-+         const localImageFilename = jsonResponse.file.filename;
++         const localImageFilename = jsonResponse.file.originalname;
 +         const localImageURL = jsonResponse.url;
 +
           submitButton.prop('disabled', false);
